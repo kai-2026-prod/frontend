@@ -23,7 +23,7 @@ export default function Register({ onClose }) {
             password: passwordRef.current.value
         };
         try {
-            await axios.post("http://localhost:3000/api/users/register", newUser);
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/users/register`, newUser);
             setSuccess(true);
             setError(null);
         } catch (err) {

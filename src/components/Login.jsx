@@ -16,7 +16,7 @@ export default function Login({ onClose, setCurrentUser }) {
         }
 
         try {
-            const res = await axios.post("http://localhost:3000/api/users/login", {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/login`, {
                 login: loginRef.current.value,
                 password: passwordRef.current.value
             });

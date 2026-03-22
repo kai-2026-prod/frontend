@@ -8,6 +8,7 @@ import axios from 'axios';
 import Register from './components/Register';
 import Login from "./components/Login";
 
+const API_URL = process.env.REACT_APP_API_URL;
 
 function App() {
   const [showLoginAlert, setShowLoginAlert] = useState(false);
@@ -31,7 +32,7 @@ function App() {
   useEffect(() => {
     const getPins = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/pins");
+        const res = await axios.get(`${API_URL}/api/pins`);
         setPins(res.data);
       } catch (err) {
         console.log(err);
@@ -62,7 +63,7 @@ function App() {
       long: newPlace.long,
     };
     try {
-      const res = await axios.post("http://localhost:3000/api/pins", newPin);
+      const res = await axios.post(`${API_URL}/api/pins`, newPin);
       setPins([...pins, res.data]);
       setNewPlace(null);
       SetTitle("");
