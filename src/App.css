@@ -6,12 +6,6 @@
   min-width: 180px;
 }
 
-.card label {
-  color: tomato;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: underline;
-}
 
 .card h4 {
   margin: 0;
