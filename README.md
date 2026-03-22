@@ -1,4 +1,4 @@
-#  Pin Map — Frontend
+#  Pin Map - Frontend
 
 A React-based interactive map application that allows users to place and view pins on a map with location details, reviews, and ratings.
 
