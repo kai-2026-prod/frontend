@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Map, { Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import RoomIcon from '@mui/icons-material/Room';
@@ -7,7 +7,14 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
+  const [title, SetTitle] = useState("");
+  const [desc, SetDesc] = useState("");
+  const [newRating, setNewRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const mapRef = useRef(null);
+  const [currentUser, setCurrentUser] = useState("JohnDoe");
   const [pins, setPins] = useState([]);
+  const [newPlace, setNewPlace] = useState(null);
   const [selectedPin, setSelectedPin] = useState(null);
   const [viewState, setViewState] = useState({
     latitude: 50.450001,
@@ -27,18 +34,52 @@ function App() {
     getPins();
   }, []);
 
+  const handleAddClick = (e) => {
+    const { lng, lat } = e.lngLat;
+    setNewPlace({
+      long: lng,
+      lat: lat,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newPin = {
+      username: currentUser,
+      title,
+      desc,
+      rating: newRating,
+      lat: newPlace.lat,
+      long: newPlace.long,
+    };
+    try {
+      const res = await axios.post("http://localhost:3000/api/pins", newPin);
+      setPins([...pins, res.data]);
+      setNewPlace(null);
+      SetTitle("");
+      SetDesc("");
+      setNewRating(0);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="App">
-      <Map
-          {...viewState}
-          onMove={evt => setViewState(evt.viewState)}
-          style={{ width: '100vw', height: '100vh' }}
-          mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-          projection="mercator"
-          maxPitch={0}
-          onClick={() => setSelectedPin(null)}
-        >
+      <Map ref={mapRef}
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        style={{ width: '100vw', height: '100vh' }}
+        mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+        mapStyle="mapbox://styles/mapbox/streets-v11"
+        projection="mercator"
+        maxPitch={0}
+        onClick={() => {
+          setSelectedPin(null);
+          setNewPlace(null);
+        }}
+        doubleClickZoom={false}
+        onDblClick={handleAddClick}
+      >
         {pins.map((p) => (
           <React.Fragment key={p._id}>
             <Marker longitude={p.long} latitude={p.lat} anchor="bottom">
@@ -47,6 +88,10 @@ function App() {
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedPin(p);
+                  mapRef.current?.flyTo({
+                    center: [p.long, p.lat],
+                    duration: 1000,
+                  });
                 }}
               />
             </Marker>
@@ -75,6 +120,38 @@ function App() {
             )}
           </React.Fragment>
         ))}
+        {newPlace && (
+          <Popup
+            longitude={newPlace.long}
+            latitude={newPlace.lat}
+            anchor="left"
+            closeButton={true}
+            closeOnClick={false}
+            onClose={() => setNewPlace(null)}
+          >
+            <form className="new-pin-form" onSubmit ={handleSubmit}>
+              <h3>Add a Pin</h3>
+              <input className="form-input" placeholder="Title" onChange ={(e) => SetTitle(e.target.value)}/>
+              <textarea className="form-textarea" placeholder="Say something about this place..." rows={3} onChange={(e) => SetDesc(e.target.value)} />
+              <div className="star-rating">
+                {Array(5).fill(0).map((_, i) => (
+                  <StarIcon
+                    key={i}
+                    style={{
+                      color: i < (hoverRating || newRating) ? 'gold' : 'lightgray',
+                      cursor: 'pointer',
+                      fontSize: 28
+                    }}
+                    onClick={() => setNewRating(i + 1)}
+                    onMouseEnter={() => setHoverRating(i + 1)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                ))}
+              </div>
+              <button className="form-btn">Add Pin</button>
+            </form>
+          </Popup>
+        )}
       </Map>
     </div>
   );
