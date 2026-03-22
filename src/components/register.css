@@ -29,6 +29,11 @@
   color: #333;
   text-align: center;
 }
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
 .register-input {
   padding: 11px 14px;
@@ -74,4 +79,14 @@
 
 .close-btn:hover {
   color: #333;
+}
+.success-message {
+  color: green;
+  font-size: 14px;
+  text-align: center;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
 }

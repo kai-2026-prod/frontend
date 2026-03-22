@@ -6,15 +6,19 @@ import StarIcon from '@mui/icons-material/Star';
 import './App.css';
 import axios from 'axios';
 import Register from './components/Register';
+import Login from "./components/Login";
+
 
 function App() {
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [title, SetTitle] = useState("");
   const [desc, SetDesc] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const mapRef = useRef(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(localStorage.getItem("user") || null);
   const [pins, setPins] = useState([]);
   const [newPlace, setNewPlace] = useState(null);
   const [selectedPin, setSelectedPin] = useState(null);
@@ -37,6 +41,12 @@ function App() {
   }, []);
 
   const handleAddClick = (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      setShowLoginAlert(true);
+      setTimeout(() => setShowLoginAlert(false), 3000);
+      return;
+    }
     const { lng, lat } = e.lngLat;
     setNewPlace({ long: lng, lat: lat });
   };
@@ -65,6 +75,7 @@ function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
@@ -77,12 +88,12 @@ function App() {
         mapStyle="mapbox://styles/mapbox/streets-v11"
         projection="mercator"
         maxPitch={0}
+        dragRotate={false}
         onClick={() => {
           setSelectedPin(null);
           setNewPlace(null);
         }}
-        doubleClickZoom={false}
-        onDblClick={handleAddClick}
+        onContextMenu={handleAddClick}
       >
         {pins.map((p) => (
           <React.Fragment key={p._id}>
@@ -163,10 +174,17 @@ function App() {
             <button className="btn logout" onClick={handleLogout}>Log Out</button>
           ) : (
             <>
-              <button className="btn login">Log In</button>
+              <button className="btn login" onClick={() => setShowLogin(true)}>Log In</button>
               <button className="btn register" onClick={() => setShowRegister(true)}>Register</button>
             </>
-          )}{showRegister && <Register onClose={() => setShowRegister(false)} />}
+          )}
+          {showLogin && <Login onClose={() => setShowLogin(false)} setCurrentUser={setCurrentUser} />}
+          {showRegister && <Register onClose={() => setShowRegister(false)} />}
+          {showLoginAlert && (
+            <div className="login-alert">
+              Please log in to add a pin.
+            </div>
+          )}
         </div>
       </Map>
     </div>
