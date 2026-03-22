@@ -5,14 +5,16 @@ import RoomIcon from '@mui/icons-material/Room';
 import StarIcon from '@mui/icons-material/Star';
 import './App.css';
 import axios from 'axios';
+import Register from './components/Register';
 
 function App() {
+  const [showRegister, setShowRegister] = useState(false);
   const [title, SetTitle] = useState("");
   const [desc, SetDesc] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const mapRef = useRef(null);
-  const [currentUser, setCurrentUser] = useState("JohnDoe");
+  const [currentUser, setCurrentUser] = useState(null);
   const [pins, setPins] = useState([]);
   const [newPlace, setNewPlace] = useState(null);
   const [selectedPin, setSelectedPin] = useState(null);
@@ -36,10 +38,7 @@ function App() {
 
   const handleAddClick = (e) => {
     const { lng, lat } = e.lngLat;
-    setNewPlace({
-      long: lng,
-      lat: lat,
-    });
+    setNewPlace({ long: lng, lat: lat });
   };
 
   const handleSubmit = async (e) => {
@@ -63,6 +62,11 @@ function App() {
       console.log(err);
     }
   };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+  };
+
   return (
     <div className="App">
       <Map ref={mapRef}
@@ -120,6 +124,7 @@ function App() {
             )}
           </React.Fragment>
         ))}
+
         {newPlace && (
           <Popup
             longitude={newPlace.long}
@@ -129,9 +134,9 @@ function App() {
             closeOnClick={false}
             onClose={() => setNewPlace(null)}
           >
-            <form className="new-pin-form" onSubmit ={handleSubmit}>
+            <form className="new-pin-form" onSubmit={handleSubmit}>
               <h3>Add a Pin</h3>
-              <input className="form-input" placeholder="Title" onChange ={(e) => SetTitle(e.target.value)}/>
+              <input className="form-input" placeholder="Title" onChange={(e) => SetTitle(e.target.value)} />
               <textarea className="form-textarea" placeholder="Say something about this place..." rows={3} onChange={(e) => SetDesc(e.target.value)} />
               <div className="star-rating">
                 {Array(5).fill(0).map((_, i) => (
@@ -148,10 +153,21 @@ function App() {
                   />
                 ))}
               </div>
-              <button className="form-btn">Add Pin</button>
+              <button className="form-btn" type="submit">Add Pin</button>
             </form>
           </Popup>
         )}
+
+        <div className="nav-buttons">
+          {currentUser ? (
+            <button className="btn logout" onClick={handleLogout}>Log Out</button>
+          ) : (
+            <>
+              <button className="btn login">Log In</button>
+              <button className="btn register" onClick={() => setShowRegister(true)}>Register</button>
+            </>
+          )}{showRegister && <Register onClose={() => setShowRegister(false)} />}
+        </div>
       </Map>
     </div>
   );

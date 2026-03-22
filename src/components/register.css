@@ -1,0 +1,77 @@
+.register-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.register-container {
+  background: white;
+  padding: 36px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 340px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+.register-container h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+}
+
+.register-input {
+  padding: 11px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.register-input:focus {
+  border-color: tomato;
+}
+
+.register-btn {
+  padding: 11px;
+  background-color: tomato;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  margin-top: 4px;
+}
+
+.register-btn:hover {
+  background-color: #e03a2e;
+}
+
+.close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: #333;
+}
