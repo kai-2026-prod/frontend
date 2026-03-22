@@ -6,7 +6,6 @@
   min-width: 180px;
 }
 
-
 .card h4 {
   margin: 0;
   font-size: 16px;
@@ -25,4 +24,63 @@
 .card .info {
   font-size: 12px;
   color: #888;
+}
+
+.new-pin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px;
+  min-width: 220px;
+}
+
+.new-pin-form h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.form-input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: slateblue;
+}
+
+.form-textarea {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 13px;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+}
+
+.form-textarea:focus {
+  border-color: slateblue;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.form-btn {
+  padding: 8px;
+  background-color: slateblue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.form-btn:hover {
+  background-color: #5a4fcf;
 }
