@@ -5,14 +5,20 @@ import RoomIcon from '@mui/icons-material/Room';
 import StarIcon from '@mui/icons-material/Star';
 import './App.css';
 import axios from 'axios';
+import Register from './components/Register';
+import Login from "./components/Login";
+
 
 function App() {
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const [title, SetTitle] = useState("");
   const [desc, SetDesc] = useState("");
   const [newRating, setNewRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const mapRef = useRef(null);
-  const [currentUser, setCurrentUser] = useState("JohnDoe");
+  const [currentUser, setCurrentUser] = useState(localStorage.getItem("user") || null);
   const [pins, setPins] = useState([]);
   const [newPlace, setNewPlace] = useState(null);
   const [selectedPin, setSelectedPin] = useState(null);
@@ -35,11 +41,14 @@ function App() {
   }, []);
 
   const handleAddClick = (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      setShowLoginAlert(true);
+      setTimeout(() => setShowLoginAlert(false), 3000);
+      return;
+    }
     const { lng, lat } = e.lngLat;
-    setNewPlace({
-      long: lng,
-      lat: lat,
-    });
+    setNewPlace({ long: lng, lat: lat });
   };
 
   const handleSubmit = async (e) => {
@@ -63,6 +72,12 @@ function App() {
       console.log(err);
     }
   };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem("user");
+  };
+
   return (
     <div className="App">
       <Map ref={mapRef}
@@ -73,12 +88,12 @@ function App() {
         mapStyle="mapbox://styles/mapbox/streets-v11"
         projection="mercator"
         maxPitch={0}
+        dragRotate={false}
         onClick={() => {
           setSelectedPin(null);
           setNewPlace(null);
         }}
-        doubleClickZoom={false}
-        onDblClick={handleAddClick}
+        onContextMenu={handleAddClick}
       >
         {pins.map((p) => (
           <React.Fragment key={p._id}>
@@ -120,6 +135,7 @@ function App() {
             )}
           </React.Fragment>
         ))}
+
         {newPlace && (
           <Popup
             longitude={newPlace.long}
@@ -129,9 +145,9 @@ function App() {
             closeOnClick={false}
             onClose={() => setNewPlace(null)}
           >
-            <form className="new-pin-form" onSubmit ={handleSubmit}>
+            <form className="new-pin-form" onSubmit={handleSubmit}>
               <h3>Add a Pin</h3>
-              <input className="form-input" placeholder="Title" onChange ={(e) => SetTitle(e.target.value)}/>
+              <input className="form-input" placeholder="Title" onChange={(e) => SetTitle(e.target.value)} />
               <textarea className="form-textarea" placeholder="Say something about this place..." rows={3} onChange={(e) => SetDesc(e.target.value)} />
               <div className="star-rating">
                 {Array(5).fill(0).map((_, i) => (
@@ -148,10 +164,28 @@ function App() {
                   />
                 ))}
               </div>
-              <button className="form-btn">Add Pin</button>
+              <button className="form-btn" type="submit">Add Pin</button>
             </form>
           </Popup>
         )}
+
+        <div className="nav-buttons">
+          {currentUser ? (
+            <button className="btn logout" onClick={handleLogout}>Log Out</button>
+          ) : (
+            <>
+              <button className="btn login" onClick={() => setShowLogin(true)}>Log In</button>
+              <button className="btn register" onClick={() => setShowRegister(true)}>Register</button>
+            </>
+          )}
+          {showLogin && <Login onClose={() => setShowLogin(false)} setCurrentUser={setCurrentUser} />}
+          {showRegister && <Register onClose={() => setShowRegister(false)} />}
+          {showLoginAlert && (
+            <div className="login-alert">
+              Please log in to add a pin.
+            </div>
+          )}
+        </div>
       </Map>
     </div>
   );

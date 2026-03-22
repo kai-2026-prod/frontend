@@ -84,3 +84,68 @@
 .form-btn:hover {
   background-color: #5a4fcf;
 }
+
+.nav-buttons {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.btn.login {
+  background-color: slateblue;
+  color: white;
+}
+
+.btn.login:hover {
+  background-color: #5a4fcf;
+}
+
+.btn.register {
+  background-color: tomato;
+  color: white;
+}
+
+.btn.register:hover {
+  background-color: #e03a2e;
+}
+
+.btn.logout {
+  background-color: #555;
+  color: white;
+}
+
+.btn.logout:hover {
+  background-color: #333;
+}
+
+.login-alert {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 100;
+  animation: fadein 0.3s ease;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
